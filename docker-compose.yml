@@ -1,0 +1,48 @@
+# Author: Luqman Yusof
+# Date Created: 13th July 2023
+
+version: '3'
+services:
+  database:
+    container_name: chopdulu_db
+    platform: linux/x86_64
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 2023_ch0pDulu
+      MYSQL_USER: chopdulu_app
+      MYSQL_PASSWORD: 2023_ch0pDulu
+      MYSQL_DATABASE: chopdulu
+    volumes:
+      - ./data:/docker-entrypoint-initdb.d
+    healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 10
+
+  backend:
+    container_name: chopdulu_app
+    volumes:
+      - .:/home/chopdulu
+      - /home/chopdulu/node_modules
+    ports:
+      - "80:3000"
+    build:
+      context: .
+      dockerfile: Dockerfile.be
+    command: "nodemon /home/chopdulu/index.js"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  migrations:
+    container_name: chopdulu_migrations
+    build: 
+      context: .
+      dockerfile: Dockerfile.migration
+    depends_on:
+      database:
+        condition: service_healthy
+    command: sh -c "knex migrate:latest --knexfile /home/chopdulu/knexfile.js --env development"
+  

@@ -1,0 +1,9 @@
+FROM node:alpine
+
+WORKDIR /home/chopdulu
+COPY /migrations/package.json ./
+COPY knexfile.js ./
+COPY migrations ./migrations
+RUN npm install
+RUN npm install knex -g
+# RUN knex migrate:latest --knexfile /home/chopdulu/knexfile.js
