@@ -2,18 +2,38 @@
 <p>Please fill up the following information to register your business.</p>
 <form action="add" method="post">
     <label for="tbxBusiness">Business Name</label>
-    <input type="text" name="tbxBusiness" id="tbxBusiness">
-
-    <label for="tbxPhone">Phone Number (WhatsApp)</label>
-    <input type="tel" name="tbxPhone" id="tbxPhone">
+    <% if (errors.hasOwnProperty('tbxBusiness')) { %>
+        <div class="validation-msg" id="vldBusiness">Please insert business name.</div>
+    <% } %>
+    <input type="text" name="tbxBusiness" id="tbxBusiness" placeholder="Your Business Name">
+    
+    <label for="tbxPhone">Phone Number (Linked to WhatsApp)</label>
+    <% if (errors.hasOwnProperty('tbxBusiness')) { %>
+        <div class="validation-msg" id="vldPhone">Please valid phone number linked to WhatsApp.</div>
+    <% } %>
+    <input type="tel" name="tbxPhone" id="tbxPhone" placeholder="60135552468">
 
     <label for="tbxPassword">Password</label>
+    <% if (errors.hasOwnProperty('tbxBusiness')) { %>
+        <div class="validation-msg" id="vldPassword">Minimum 8 characters, contain atleast 1 symbol, 1 uppercase and 1 number.</div>
+    <% } %>
     <input type="password" name="tbxPassword" id="tbxPassword">
 
     <label for="tbxConfirmPassword">Confirm Password</label>
+    <% if (errors.hasOwnProperty('tbxBusiness')) { %>
+        <div class="validation-msg" id="vldConfirmPassword">Password not match.</div>
+    <% } %>
     <input type="password" name="tbxConfirmPassword" id="tbxConfirmPassword">
 
     <input type="submit" value="Register">
 </form>
 
 <p>Having trouble creating your account? <a href="/contact">Contact us</a></p>
+
+<style>
+    .validation-msg {
+        color: red;
+        font-size: 0.8em;
+        /* display: none; */
+    }
+</style>

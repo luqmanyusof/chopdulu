@@ -632,4 +632,8 @@ img {
   float: right;
 }
 
+::placeholder {
+  color: #606c76da
+}
+
 /*# sourceMappingURL=milligram.css.map */
