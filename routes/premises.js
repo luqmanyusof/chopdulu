@@ -3,7 +3,10 @@ var router = express.Router();
 var { validationResult, body } = require('express-validator');
 var config = require('../config');
 var dbConfig = require('../knexfile');
-const db = require('knex').knex(dbConfig.development);
+var db = require('knex').knex(dbConfig.development);
+var { nanoid, random, customRandom } = require('nanoid');
+var bcrypt = require('bcrypt');
+var moment = require('moment');
 
 if (config.env == 'prod') {
   knex = require('knex').knex(dbConfig.prod);
@@ -30,12 +33,43 @@ async function(req, res, next) {
   }
 
   req.body.tbxPhone = req.body.tbxPhone.replace(/\D/g, '');
-  var existUuid = await db('premises').select('uuid').where({ phone_number: req.body.tbxPhone});
-  if (existUuid.length > 0) {
-    return res.render('premises/add', { errors: { businessExist: true} });
-  }
+  var existPremise = await db('premises')
+  .select('*')
+  .where({ phone_number: req.body.tbxPhone});
 
-  return res.json(req.body);
+  // if (existPremise.length > 0) {
+  //   return res.render('premises/add', { errors: { businessExist: true} });
+  // }
+
+  var _uuid = nanoid();
+  var hashedPassword = await bcrypt.hashSync(req.body.tbxPassword, 10);
+
+  await db('premises').insert({
+    uuid: _uuid,
+    business_name: req.body.tbxBusiness,
+    phone_number: req.body.tbxPhone,
+    password: hashedPassword
+  }).then((result) => {
+    console.log();
+  }).catch((error) => {
+    console.log(error);
+  })
+
+  var expiredDateTime = moment().add(1, 'hour').format('YYYY-MM-DD HH:mm:ss');
+
+  await db('phone_verification').insert({
+    phone_number: req.body.tbxPhone,
+    uuid: _uuid,
+    code: Math.floor(100000 + Math.random() * 900000),
+    expired_time: expiredDateTime,
+    status: 'Pending'
+  })
+
+});
+
+router.get('/verification/:phone/:uuid', function (req, res) {
+  return res.render('premises/verification', { info: req.body })
+
 });
 
 module.exports = router;

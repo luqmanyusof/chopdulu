@@ -8,19 +8,19 @@
     <input type="text" name="tbxBusiness" id="tbxBusiness" placeholder="Your Business Name">
     
     <label for="tbxPhone">Phone Number (Linked to WhatsApp)</label>
-    <% if (errors.hasOwnProperty('tbxBusiness')) { %>
+    <% if (errors.hasOwnProperty('tbxPhone')) { %>
         <div class="validation-msg" id="vldPhone">Please valid phone number linked to WhatsApp.</div>
     <% } %>
     <input type="tel" name="tbxPhone" id="tbxPhone" placeholder="60135552468">
 
     <label for="tbxPassword">Password</label>
-    <% if (errors.hasOwnProperty('tbxBusiness')) { %>
+    <% if (errors.hasOwnProperty('tbxPassword')) { %>
         <div class="validation-msg" id="vldPassword">Minimum 8 characters, contain atleast 1 symbol, 1 uppercase and 1 number.</div>
     <% } %>
     <input type="password" name="tbxPassword" id="tbxPassword">
 
     <label for="tbxConfirmPassword">Confirm Password</label>
-    <% if (errors.hasOwnProperty('tbxBusiness')) { %>
+    <% if (errors.hasOwnProperty('tbxConfirmPassword')) { %>
         <div class="validation-msg" id="vldConfirmPassword">Password not match.</div>
     <% } %>
     <input type="password" name="tbxConfirmPassword" id="tbxConfirmPassword">
