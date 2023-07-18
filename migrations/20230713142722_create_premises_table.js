@@ -9,7 +9,7 @@ exports.up = function(knex) {
     table.string('business_name', 150).notNullable();
     table.string('password', 200).notNullable();
     table.string('phone_number', 20).notNullable();
-    table.boolean('is_active').notNullable().defaultTo(1);
+    table.boolean('is_active').notNullable().defaultTo(0);
     table.timestamps(true, true);
   })
 };

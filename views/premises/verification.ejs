@@ -1,4 +1,30 @@
-<script>
-    var info = '<%- JSON.stringify(info) %>';
-    console.log((info));
-</script>
+<div style="justify-content: center;">
+    <h1>Verification</h1>
+    <p>Please insert 6 digit code sent to your number <%= phone %> through WhatsApp.</p>
+    <form action="/premises/verification" method="post">
+        <label for="tbxCode">Code</label>
+        <input type="number" name="tbxCode" id="tbxCode">
+        <input type="hidden" name="tbxUuid" id="tbxUuid" value="<%= uuid %>">
+        <input type="hidden" name="tbxPhone" id="tbxPhone" value="<%= phone %>">
+
+        <% if(error !== '') { %>
+            <p class="validation-msg"><%= error %></p>
+        <% } %>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        text-align: center;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+        text-align: center;
+    }
+</style>
