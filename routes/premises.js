@@ -90,7 +90,7 @@ router.post('/verification', async function (req, res) {
   var _phone = req.body.tbxPhone;
 
   console.log(req.body);
-  
+
   await db('phone_verification')
     .where({ uuid: _uuid, code: _code })
     .orderBy('id', 'desc')
@@ -100,20 +100,45 @@ router.post('/verification', async function (req, res) {
         return res.render('premises/verification', { phone: _phone, uuid: _uuid, error: 'Invalid verification code. Try again.' })
       } else {
         await db('phone_verification')
-        .update({ status: 'Verified' })
-        .where({ id: result[0].id })
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error))
+          .update({ status: 'Verified' })
+          .where({ id: result[0].id })
+          .then((result) => console.log(result))
+          .catch((error) => console.error(error))
 
         await db('premises')
-        .update({ is_verified: true})
-        .where({ phone_number: _phone})
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error))
+          .update({ is_verified: true })
+          .where({ phone_number: _phone })
+          .then((result) => console.log(result))
+          .catch((error) => console.error(error))
 
         res.redirect('login');
       }
     })
+})
+
+router.post('/auth', async function (req, res) {
+  var _password = req.body.tbxPassword;
+  var _phone = req.body.tbxPhone;
+
+  await db('premises')
+    .where({ 'phone_number': _phone })
+    .andWhere({ is_active: 1 })
+    .andWhere({ is_verified: 1 })
+    .then(async (result) => {
+      if (result.length > 0) {
+
+        await bcrypt.compare(_password, result[0].password, (err, data) => {
+          if (err) throw err
+
+          if (data) {
+            return res.status(200).json({ msg: "Login success" })
+          } else {
+            return res.status(401).json({ msg: "Invalid credencial" })
+          }
+        })
+      }
+    })
+    .catch((error) => console.error(error));
 })
 
 module.exports = router;
